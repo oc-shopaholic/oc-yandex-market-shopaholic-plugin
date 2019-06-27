@@ -1,0 +1,10 @@
+plugin:
+    name: 'lovata.basecode::lang.plugin.name'
+    description: 'lovata.basecode::lang.plugin.description'
+    author: Lovata
+    icon: oc-icon-magic
+    homepage: ''
+permissions:
+    lovata-site-settings:
+        label: 'lovata.basecode::lang.permission.settings'
+        tab: 'lovata.basecode::lang.tab.permissions'
