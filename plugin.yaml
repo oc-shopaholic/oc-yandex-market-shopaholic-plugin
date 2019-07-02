@@ -1,10 +1,10 @@
 plugin:
-    name: 'lovata.basecode::lang.plugin.name'
-    description: 'lovata.basecode::lang.plugin.description'
+    name: 'lovata.yandexmarketshopaholic::lang.plugin.name'
+    description: 'lovata.yandexmarketshopaholic::lang.plugin.description'
     author: Lovata
-    icon: oc-icon-magic
+    icon: icon-upload
     homepage: ''
 permissions:
-    lovata-site-settings:
-        label: 'lovata.basecode::lang.permission.settings'
-        tab: 'lovata.basecode::lang.tab.permissions'
+    shopaholic-menu-yandex-market-export:
+        label: 'lovata.yandexmarketshopaholic::lang.permission.yandexmarketsettings'
+        tab: 'lovata.shopaholic::lang.tab.permissions'
