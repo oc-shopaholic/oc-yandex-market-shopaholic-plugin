@@ -13,12 +13,12 @@ use Lovata\Shopaholic\Models\Currency;
 use System\Classes\PluginManager;
 
 /**
- * Class YandexDataCollection
+ * Class DataCollection
  *
- * @package Lovata\YandexMarketShopaholic\Classes\Helper\SiteMap
+ * @package Lovata\YandexMarketShopaholic\Classes\Helper
  * @author  Sergey Zakharevich, s.zakharevich@lovata.com, LOVATA Group
  */
-class YandexDataCollection
+class DataCollection
 {
     const EVENT_YANDEX_MARKET_SHOP_DATA  = 'shopaholic.yandex.market.shop.data';
     const EVENT_YANDEX_MARKET_OFFER_DATA = 'shopaholic.yandex.market.offer.data';
@@ -54,17 +54,17 @@ class YandexDataCollection
      *     ],
      *     'offers' => [
      *          [
-     *              'rate'                  => '',
-     *              'name'                  => '',
-     *              'url'                   => '',
-     *              'id'                    => '',
-     *              'price'                 => '',
-     *              'old_price'             => '',
-     *              'currency_id'           => '',
-     *              'category_id'           => '',
-     *              'images'                => [],
-     *              'enable_auto_discounts' => '',
-     *              'properties'            => [
+     *              'rate'           => '',
+     *              'name'           => '',
+     *              'url'            => '',
+     *              'id'             => '',
+     *              'price'          => '',
+     *              'old_price'      => '',
+     *              'currency_id'    => '',
+     *              'category_id'    => '',
+     *              'images'         => [],
+     *              'auto_discounts' => '',
+     *              'properties'     => [
      *                  [
      *                      'name'    => '',
      *                      'value'   => '',
@@ -89,18 +89,9 @@ class YandexDataCollection
     {
         $this->initShopData();
         $this->initProductListData();
-    }
 
-    /**
-     * Get file path
-     *
-     * @return string
-     */
-    public function getFilePath()
-    {
-        $sPath = Config::getValue('path_to_export_the_file', '/');
-
-        return app_path($sPath);
+        $obGenerateXML = new GenerateXML();
+        $obGenerateXML->generate($this->arData);
     }
 
     /**
@@ -221,32 +212,33 @@ class YandexDataCollection
     {
         $bOffer   = empty($obOffer) || !$obOffer instanceof OfferItem;
         $bProduct = empty($obProduct) || !$obProduct instanceof ProductItem;
-        $iRate = Config::getValue('offers_rate', '');
-
-        if ($bOffer || $bProduct || !is_array($this->arData) || $iRate === null || empty($this->obDefaultCurrency)) {
+        if ($bOffer || $bProduct || !is_array($this->arData) || empty($this->obDefaultCurrency)) {
             return;
         }
 
-        $arOfferList = array_pull($this->arData, 'offers', []);
+        $bFieldEnableAutoDiscounts = Config::getValue('field_enable_auto_discounts', false);
+        $bFieldBrand               = Config::getValue('field_brand', false);
+        $bFieldOldPrice            = Config::getValue('field_old_price', false);
 
+        $arOfferList = array_pull($this->arData, 'offers', []);
         $arOffer = [
-            'name'        => $obOffer->name,
-            'rate'        => $iRate,
-            'url'         => $obProduct->getPageUrl(),
-            'id'          => $obOffer->id,
-            'price'       => $obOffer->price,
-            'currency_id' => $this->obDefaultCurrency->code,
-            'category_id' => $obProduct->category_id,
-            'images'      => $this->getOfferImages($obOffer , $obProduct),
-            'properties'  => $this->getOfferProperties($obOffer),
+            'name'           => $obOffer->name,
+            'rate'           => Config::getValue('offers_rate', ''),
+            'url'            => $obProduct->getPageUrl(),
+            'id'             => $obOffer->id,
+            'price'          => $obOffer->price,
+            'currency_id'    => $this->obDefaultCurrency->code,
+            'category_id'    => $obProduct->category_id,
+            'images'         => $this->getOfferImages($obOffer, $obProduct),
+            'properties'     => $this->getOfferProperties($obOffer),
+            'auto_discounts' => $bFieldEnableAutoDiscounts,
         ];
 
-        $bFieldEnableAutoDiscounts = Config::getValue('field_enable_auto_discounts', false);
-
-        if (!$bFieldEnableAutoDiscounts) {
+        if ($bFieldBrand) {
+            $arOffer['brand_name'] = $this->getBrandName($obProduct);
+        }
+        if (!$bFieldEnableAutoDiscounts && $bFieldOldPrice) {
             $arOffer['old_price'] = $obOffer->old_price;
-        } else {
-            $arOffer['enable_auto_discounts'] = $bFieldEnableAutoDiscounts;
         }
 
         $arEventOfferData = Event::fire(self::EVENT_YANDEX_MARKET_OFFER_DATA, [$arOffer], true);
@@ -258,6 +250,21 @@ class YandexDataCollection
         $arOfferList[] = $arOffer;
 
         array_set($this->arData, 'offers', $arOfferList);
+    }
+
+    /**
+     * Get brand name
+     *
+     * @param ProductItem $obProduct
+     * @return string
+     */
+    protected function getBrandName($obProduct)
+    {
+        if ($obProduct->isEmpty() || !$obProduct instanceof ProductItem || $obProduct->brand->isEmpty()) {
+            return '';
+        }
+
+        return $obProduct->brand->name;
     }
 
     /**
@@ -294,7 +301,9 @@ class YandexDataCollection
             $arResult[] = $obModel->preview_image_yandex->path;
         }
 
-        if ($obModel->images_yandex->isEmpty()) {
+        $bFieldImages = Config::getValue('field_images', false);
+
+        if (!$bFieldImages || $obModel->images_yandex->isEmpty()) {
             return $arResult;
         }
 
@@ -315,9 +324,11 @@ class YandexDataCollection
     {
         $arResult = [];
 
-        $bHasPlugin = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
 
-        if (!$bHasPlugin || empty($obOffer) || !$obOffer instanceof OfferItem) {
+        $bHasPlugin = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
+        $arAvailableProperty = Config::getValue('field_offer_properties', []);
+
+        if (!$bHasPlugin || empty($obOffer) || !$obOffer instanceof OfferItem || !is_array($arAvailableProperty)) {
             return $arResult;
         }
         $obPropertyList = $obOffer->property;
@@ -326,9 +337,10 @@ class YandexDataCollection
             return $arResult;
         }
 
+
         /** @var PropertyItem $obPropertyItem */
         foreach ($obPropertyList as $obPropertyItem) {
-            if (!$obPropertyItem->hasValue()) {
+            if (!$obPropertyItem->hasValue() || !in_array($obPropertyItem->id, $arAvailableProperty)) {
                 continue;
             }
 

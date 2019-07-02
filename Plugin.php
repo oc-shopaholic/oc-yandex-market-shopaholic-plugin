@@ -66,4 +66,16 @@ class Plugin extends PluginBase
     {
         $this->registerConsoleCommand('shopaholic:catalog_export_to_yandex', CatalogExportForYandexMarkets::class);
     }
+
+    /**
+     * @return array
+     */
+    public function registerReportWidgets()
+    {
+        return [
+            'Lovata\YandexMarketShopaholic\Widgets\ExportToXML' => [
+                'label' => 'lovata.yandexmarketshopaholic::lang.widget.export_catalog_to_xml_for_yandex_market',
+            ],
+        ];
+    }
 }

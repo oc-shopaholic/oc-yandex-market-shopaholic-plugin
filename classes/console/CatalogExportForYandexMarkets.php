@@ -1,7 +1,7 @@
 <?php namespace Lovata\YandexMarketShopaholic\Classes\Console;
 
 use Illuminate\Console\Command;
-use Lovata\YandexMarketShopaholic\Classes\Helper\YandexDataCollection;
+use Lovata\YandexMarketShopaholic\Classes\Helper\DataCollection;
 
 /**
  * Class CatalogExportForYandexMarkets
@@ -27,7 +27,7 @@ class CatalogExportForYandexMarkets extends Command
      */
     public function handle()
     {
-        $obYandexDataCollection = new YandexDataCollection();
-        $obYandexDataCollection->generate();
+        $obDataCollection = new DataCollection();
+        $obDataCollection->generate();
     }
 }
