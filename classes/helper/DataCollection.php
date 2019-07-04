@@ -64,6 +64,7 @@ class DataCollection
      *              'category_id'    => '',
      *              'images'         => [],
      *              'auto_discounts' => '',
+     *              'description'    => '',
      *              'properties'     => [
      *                  [
      *                      'name'    => '',
@@ -232,6 +233,7 @@ class DataCollection
             'images'         => $this->getOfferImages($obOffer, $obProduct),
             'properties'     => $this->getOfferProperties($obOffer),
             'auto_discounts' => $bFieldEnableAutoDiscounts,
+            'description'    => $obOffer->description,
         ];
 
         if ($bFieldBrand) {
