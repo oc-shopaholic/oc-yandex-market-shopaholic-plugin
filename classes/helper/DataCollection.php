@@ -272,19 +272,19 @@ class DataCollection
     /**
      * Get offer images
      *
-     * @param OfferItem|OfferItem $obObOffer
+     * @param OfferItem|OfferItem $obOffer
      * @param OfferItem|ProductItem $obProduct
      *
      * @return array
      */
-    protected function getOfferImages($obObOffer, $obProduct)
+    protected function getOfferImages($obOffer, $obProduct)
     {
         $arResult = [];
 
         $sCodeModelForImages = Config::getValue('code_model_for_images');
 
         if (Config::CODE_OFFER == $sCodeModelForImages) {
-            $obItem = $obObOffer;
+            $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
         }
