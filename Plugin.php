@@ -31,7 +31,7 @@ class Plugin extends PluginBase
         return [
             'config'    => [
                 'label'       => 'lovata.yandexmarketshopaholic::lang.menu.yandexmarketsettings',
-                'description' => 'lovata.yandexmarketshopaholic::lang.plugin.description',
+                'description' => '',
                 'category'    => 'lovata.shopaholic::lang.tab.settings',
                 'icon'        => 'icon-upload',
                 'class'       => 'Lovata\YandexMarketShopaholic\Models\YandexMarketSettings',

@@ -1,7 +1,7 @@
 <?php return [
     'plugin'     => [
         'name'        => 'Export catalog for Yandex Market',
-        'description' => 'Settings for export catalog for Yandex Market',
+        'description' => 'Generating XML file for Yandex Market in YAML format',
     ],
     'menu'       => [
         'yandexmarketsettings' => 'Export catalog to Yandex Market',
