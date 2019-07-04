@@ -36,4 +36,7 @@
     'permission' => [
         'yandexmarketsettings' => 'Управление экспортом каталога для Яндекс маркета',
     ],
+    'message'    => [
+        'export_is_complete' => 'Экспорт завершен',
+    ],
 ];

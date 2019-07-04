@@ -217,9 +217,7 @@ class DataCollection
             return;
         }
 
-        $bFieldEnableAutoDiscounts = Config::getValue('field_enable_auto_discounts', false);
-        $bFieldBrand               = Config::getValue('field_brand', false);
-        $bFieldOldPrice            = Config::getValue('field_old_price', false);
+
 
         $arOfferList = array_pull($this->arData, 'offers', []);
         $arOffer = [
@@ -232,16 +230,11 @@ class DataCollection
             'category_id'    => $obProduct->category_id,
             'images'         => $this->getOfferImages($obOffer, $obProduct),
             'properties'     => $this->getOfferProperties($obOffer),
-            'auto_discounts' => $bFieldEnableAutoDiscounts,
+            'auto_discounts' => Config::getValue('field_enable_auto_discounts', false),
             'description'    => $obOffer->preview_text,
+            'brand_name'     => $this->getBrandName($obProduct),
+            'old_price'      => $this->getOfferOldPrice($obOffer),
         ];
-
-        if ($bFieldBrand) {
-            $arOffer['brand_name'] = $this->getBrandName($obProduct);
-        }
-        if (!$bFieldEnableAutoDiscounts && $bFieldOldPrice) {
-            $arOffer['old_price'] = $obOffer->old_price;
-        }
 
         $arEventOfferData = Event::fire(self::EVENT_YANDEX_MARKET_OFFER_DATA, [$arOffer], true);
 
@@ -255,6 +248,24 @@ class DataCollection
     }
 
     /**
+     * Get offer old price
+     *
+     * @param OfferItem $obOffer
+     * @return string
+     */
+    protected function getOfferOldPrice($obOffer)
+    {
+        $bFieldEnableAutoDiscounts = Config::getValue('field_enable_auto_discounts', false);
+        $bFieldOldPrice            = Config::getValue('field_old_price', false);
+        $bOffer = empty($obOffer) || !$obOffer instanceof OfferItem || $obOffer->old_price == 0;
+
+        if ($bFieldEnableAutoDiscounts || !$bFieldOldPrice || $bOffer) {
+            return '';
+        }
+
+        return $obOffer->old_price;
+    }
+    /**
      * Get brand name
      *
      * @param ProductItem $obProduct
@@ -262,7 +273,9 @@ class DataCollection
      */
     protected function getBrandName($obProduct)
     {
-        if ($obProduct->isEmpty() || !$obProduct instanceof ProductItem || $obProduct->brand->isEmpty()) {
+        $bFieldBrand = Config::getValue('field_brand', false);
+
+        if (!$bFieldBrand || !$obProduct instanceof ProductItem || $obProduct->brand->isEmpty()) {
             return '';
         }
 
@@ -283,7 +296,7 @@ class DataCollection
 
         $sCodeModelForImages = Config::getValue('code_model_for_images');
 
-        if (Config::CODE_OFFER == $sCodeModelForImages) {
+        if (empty($sCodeModelForImages) || Config::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
