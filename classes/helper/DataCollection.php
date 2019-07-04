@@ -233,7 +233,7 @@ class DataCollection
             'images'         => $this->getOfferImages($obOffer, $obProduct),
             'properties'     => $this->getOfferProperties($obOffer),
             'auto_discounts' => $bFieldEnableAutoDiscounts,
-            'description'    => $obOffer->description,
+            'description'    => $obOffer->preview_text,
         ];
 
         if ($bFieldBrand) {
