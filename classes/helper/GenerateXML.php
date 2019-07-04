@@ -154,10 +154,13 @@ class GenerateXML
         // <categories>
         $this->obXMLWriter->startElement('categories');
         foreach ($arCategoryList as $arCategory) {
+            $iParentId = array_get($arCategory, 'parent_id');
             // <category id='' parentId=''>
             $this->obXMLWriter->startElement('category');
             $this->obXMLWriter->writeAttribute('id', array_get($arCategory, 'id'));
-            $this->obXMLWriter->writeAttribute('parentId', array_get($arCategory, 'parent_id'));
+            if (!empty($iParentId)) {
+                $this->obXMLWriter->writeAttribute('parentId', array_get($arCategory, 'parent_id'));
+            }
             $this->obXMLWriter->text(array_get($arCategory, 'name'));
             $this->obXMLWriter->endElement();
             // </category>
