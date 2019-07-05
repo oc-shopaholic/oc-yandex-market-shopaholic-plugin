@@ -16,7 +16,7 @@
         'store_homepage_url'                         => 'Store homepage URL',
         'agency'                                     => 'Name of the agency that provides technical support to the store',
         'email_agency'                               => 'Email address of the technical support agency',
-        'path_to_export_the_file'                    => 'Path to export the file (default app/yandex_market_yaml)',
+        'path_to_export_the_file'                    => 'Path to export the file (default storage/app/media/yandex_market_yaml)',
         'use_main_currency_only'                     => 'Use only main currency',
         'default_currency_rates'                     => 'Use default currency rates',
         'currency_rates'                             => 'Currency rates',

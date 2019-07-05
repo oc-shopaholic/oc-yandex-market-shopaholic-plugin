@@ -46,12 +46,13 @@ class GenerateXML
         $this->arOffersData = array_get($arData, 'offers', []);
 
         if (empty($this->arShopData) || empty($this->arOffersData)) {
-            return;
+            return '';
         }
 
         $this->start();
         $this->setContent();
         $this->stop();
+
         $this->save();
     }
 
@@ -274,7 +275,7 @@ class GenerateXML
     {
         $sFilePath = self::getFilePath();
 
-        $sFilePath = base_path($sFilePath);
+        $sFilePath = storage_path('app/media/'.$sFilePath);
 
         if (!file_exists($sFilePath)) {
             mkdir($sFilePath, null, true);

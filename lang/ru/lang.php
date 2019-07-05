@@ -16,7 +16,7 @@
         'store_homepage_url'                         => 'URL главной страницы магазина',
         'agency'                                     => 'Наименование агентства, которое оказывает техническую поддержку магазину',
         'email_agency'                               => 'Email адрес агентства, осуществляющего техподдержку',
-        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию app/yandex_market_yaml)',
+        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию storage/app/media/yandex_market_yaml)',
         'use_main_currency_only'                     => 'Использовать только основную валюту',
         'default_currency_rates'                     => 'Использовать курсы валют заданные по умолчанию',
         'currency_rates'                             => 'Курсы валют',
