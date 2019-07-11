@@ -1,10 +1,10 @@
 <?php return [
     'plugin'     => [
-        'name'        => 'Экспорт каталога в Яндекс маркета',
-        'description' => 'Генерация XML файла для Яндекс маркета в формате YAML',
+        'name'        => 'Экспорт товаров для Yandex Market',
+        'description' => 'Интеграция через YAML формата',
     ],
     'menu'       => [
-        'yandexmarketsettings' => 'Экспорт каталога для Яндекс маркета',
+        'yandexmarketsettings' => 'Экспорт в Yandex Market',
     ],
     'component'  => [],
     'tab'        => [
@@ -16,7 +16,7 @@
         'store_homepage_url'                         => 'URL главной страницы магазина',
         'agency'                                     => 'Наименование агентства, которое оказывает техническую поддержку магазину',
         'email_agency'                               => 'Email адрес агентства, осуществляющего техподдержку',
-        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию storage/app/media/yandex_market_yaml)',
+        'path_to_export_the_file'                    => 'Путь для экспорта файла (по умолчанию storage/app/media/yandex_market_yaml.xml)',
         'use_main_currency_only'                     => 'Использовать только основную валюту',
         'default_currency_rates'                     => 'Использовать курсы валют заданные по умолчанию',
         'currency_rates'                             => 'Курсы валют',
@@ -28,15 +28,17 @@
         'section_yandex_market'                      => 'Яндекс маркет',
     ],
     'button'     => [
-        'export_catalog_to_xml' => 'Экспорт каталога в XML файл',
+        'export_catalog_to_xml' => 'Обновить каталог в XML файле',
+        'download'              => 'Скачать',
     ],
     'widget'     => [
-        'export_catalog_to_xml_for_yandex_market' => 'Экспорт каталога в XML файл для Яндекс маркета',
+        'export_catalog_to_xml_for_yandex_market' => 'Экспорт каталога в XML файл для Yandex Market',
     ],
     'permission' => [
-        'yandexmarketsettings' => 'Управление экспортом каталога для Яндекс маркета',
+        'yandexmarketsettings' => 'Управление экспортом для Yandex Market',
     ],
     'message'    => [
-        'export_is_complete' => 'Экспорт завершен',
+        'export_is_complete'            => 'Экспорт завершен',
+        'update_catalog_to_xml_confirm' => 'Обновить каталог в XML файле?',
     ],
 ];

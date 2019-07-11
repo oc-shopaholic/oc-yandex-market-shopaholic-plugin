@@ -295,9 +295,13 @@ class DataCollection
     {
         $arResult = [];
 
-        $sCodeModelForImages = Config::getValue('code_model_for_images');
+        $sCodeModelForImages = Config::getValue('code_model_for_images', '');
 
-        if (empty($sCodeModelForImages) || Config::CODE_OFFER == $sCodeModelForImages) {
+        if (empty($sCodeModelForImages)) {
+            return $arResult;
+        }
+
+        if (Config::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
@@ -340,8 +344,7 @@ class DataCollection
     {
         $arResult = [];
 
-
-        $bHasPlugin = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
+        $bHasPlugin          = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
         $arAvailableProperty = Config::getValue('field_offer_properties', []);
 
         if (!$bHasPlugin || empty($obOffer) || !$obOffer instanceof OfferItem || !is_array($arAvailableProperty)) {

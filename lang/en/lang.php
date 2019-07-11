@@ -1,10 +1,10 @@
 <?php return [
     'plugin'     => [
-        'name'        => 'Export catalog for Yandex Market',
-        'description' => 'Generating XML file for Yandex Market in YAML format',
+        'name'        => 'Export products for Yandex Market',
+        'description' => 'Integration through YAML format',
     ],
     'menu'       => [
-        'yandexmarketsettings' => 'Export catalog to Yandex Market',
+        'yandexmarketsettings' => 'Export to Yandex Market',
     ],
     'component'  => [],
     'tab'        => [
@@ -16,7 +16,7 @@
         'store_homepage_url'                         => 'Store homepage URL',
         'agency'                                     => 'Name of the agency that provides technical support to the store',
         'email_agency'                               => 'Email address of the technical support agency',
-        'path_to_export_the_file'                    => 'Path to export the file (default storage/app/media/yandex_market_yaml)',
+        'path_to_export_the_file'                    => 'Path to export the file (default storage/app/media/yandex_market_yaml.xml)',
         'use_main_currency_only'                     => 'Use only main currency',
         'default_currency_rates'                     => 'Use default currency rates',
         'currency_rates'                             => 'Currency rates',
@@ -28,15 +28,17 @@
         'section_yandex_market'                      => 'Yandex market',
     ],
     'button'     => [
-        'export_catalog_to_xml' => 'Export catalog to XML file',
+        'export_catalog_to_xml' => 'Update catalog to XML file',
+        'download'              => 'Download',
     ],
     'widget'     => [
         'export_catalog_to_xml_for_yandex_market' => 'Export catalog to XML for Yandex market',
     ],
     'permission' => [
-        'yandexmarketsettings' => 'Manager export catalog for Yandex Market',
+        'yandexmarketsettings' => 'Manager export for Yandex Market',
     ],
     'message'    => [
-        'export_is_complete' => 'Export is complete',
+        'export_is_complete'            => 'Export is complete',
+        'update_catalog_to_xml_confirm' => 'Update catalog to XML file?',
     ],
 ];

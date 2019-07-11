@@ -15,6 +15,8 @@ class GenerateXML
 {
     const FILE_NAME = 'yandex_market_yaml.xml';
 
+    const DEFAULT_DIRECTORY = 'app/media/';
+
     /**
      * @var array
      */
@@ -46,7 +48,7 @@ class GenerateXML
         $this->arOffersData = array_get($arData, 'offers', []);
 
         if (empty($this->arShopData) || empty($this->arOffersData)) {
-            return '';
+            return;
         }
 
         $this->start();
@@ -57,26 +59,28 @@ class GenerateXML
     }
 
     /**
-     * Get file path
+     * Get media path
      *
      * @return string
      */
-    public static function getFilePath()
+    public static function getMediaPath()
     {
+        $sMediaPath = self::DEFAULT_DIRECTORY;
+
         $sFilePath = (string) Config::getValue('path_to_export_the_file' , '');
 
         if (empty($sFilePath)) {
-            return '/';
+            return $sMediaPath;
         }
 
         $sFilePath = trim($sFilePath);
-        $sFilePath = preg_replace('/^\//', '', $sFilePath);
-        $sFilePath = preg_replace('/\/$/', '', $sFilePath);
+        $sFilePath = preg_replace('/^\/+/', '', $sFilePath);
+        $sFilePath = preg_replace('/\/+$/', '', $sFilePath);
         $sFilePath = trim($sFilePath);
         $sFilePath = preg_replace('/ +/', '', $sFilePath);
         $sFilePath .= '/';
 
-        return $sFilePath;
+        return $sMediaPath.$sFilePath;
     }
 
     /**
@@ -273,12 +277,12 @@ class GenerateXML
      */
     protected function save()
     {
-        $sFilePath = self::getFilePath();
+        $sMediaPath = self::getMediaPath();
 
-        $sFilePath = storage_path('app/media/'.$sFilePath);
+        $sFilePath = storage_path($sMediaPath);
 
         if (!file_exists($sFilePath)) {
-            mkdir($sFilePath, null, true);
+            mkdir($sFilePath, 0777, true);
         }
 
         $sFile = $sFilePath.self::FILE_NAME;

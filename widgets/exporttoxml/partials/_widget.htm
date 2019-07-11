@@ -3,10 +3,15 @@
         <?= e(trans('lovata.yandexmarketshopaholic::lang.widget.export_catalog_to_xml_for_yandex_market')) ?>
     </h3>
     <button
-            type="submit"
+            type="button"
             data-request="onGenerateXMLForYandexMarket"
             class="btn btn-primary icon-upload"
+            data-request-update="download: '.download-btn-yandex-market'"
+            data-request-confirm="<?= e(trans('lovata.yandexmarketshopaholic::lang.message.update_catalog_to_xml_confirm')) ?>"
     >
         <?= e(trans('lovata.yandexmarketshopaholic::lang.button.export_catalog_to_xml')) ?>
     </button>
+    <div class="download-btn-yandex-market">
+        <?= $this->makePartial('download') ?>
+    </div>
 </div>

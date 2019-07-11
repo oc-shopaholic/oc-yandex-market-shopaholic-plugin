@@ -2,7 +2,6 @@
 
 use Event;
 use System\Classes\PluginBase;
-use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings;
 
 // Command
 use Lovata\YandexMarketShopaholic\Classes\Console\CatalogExportForYandexMarkets;
@@ -46,17 +45,12 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
-        $sCodeModelForImages = YandexMarketSettings::getValue('code_model_for_images', '');
-
-        if (empty($sCodeModelForImages) || $sCodeModelForImages == YandexMarketSettings::CODE_OFFER) {
-            // Offer event
-            Event::subscribe(ExtendOfferFieldsHandler::class);
-            Event::subscribe(OfferModelHandler::class);
-        } else {
-            // Product event
-            Event::subscribe(ExtendProductFieldsHandler::class);
-            Event::subscribe(ProductModelHandler::class);
-        }
+        // Offer event
+        Event::subscribe(ExtendOfferFieldsHandler::class);
+        Event::subscribe(OfferModelHandler::class);
+        // Product event
+        Event::subscribe(ExtendProductFieldsHandler::class);
+        Event::subscribe(ProductModelHandler::class);
     }
 
     /**
