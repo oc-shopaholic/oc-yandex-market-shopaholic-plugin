@@ -3,7 +3,7 @@
 use File;
 use XMLWriter;
 use October\Rain\Argon\Argon;
-use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings as Config;
+use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings;
 
 /**
  * Class GenerateXML
@@ -13,8 +13,7 @@ use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings as Config;
  */
 class GenerateXML
 {
-    const FILE_NAME = 'yandex_market_yaml.xml';
-
+    const FILE_NAME = 'yandex_market.xml';
     const DEFAULT_DIRECTORY = 'app/media/';
 
     /**
@@ -38,15 +37,25 @@ class GenerateXML
     protected $obXMLWriter;
 
     /**
+     * Get path to file relative to storage folder
+     * @return string
+     */
+    public static function getFilePath()
+    {
+        $sResult = self::DEFAULT_DIRECTORY.self::FILE_NAME;
+
+        return $sResult;
+    }
+
+    /**
      * Generate
      *
      * @param array $arData
      */
     public function generate($arData)
     {
-        $this->arShopData   = array_get($arData, 'shop', []);
-        $this->arOffersData = array_get($arData, 'offers', []);
-
+        $this->arShopData   = (array) array_get($arData, 'shop', []);
+        $this->arOffersData = (array) array_get($arData, 'offers', []);
         if (empty($this->arShopData) || empty($this->arOffersData)) {
             return;
         }
@@ -56,31 +65,6 @@ class GenerateXML
         $this->stop();
 
         $this->save();
-    }
-
-    /**
-     * Get media path
-     *
-     * @return string
-     */
-    public static function getMediaPath()
-    {
-        $sMediaPath = self::DEFAULT_DIRECTORY;
-
-        $sFilePath = (string) Config::getValue('path_to_export_the_file' , '');
-
-        if (empty($sFilePath)) {
-            return $sMediaPath;
-        }
-
-        $sFilePath = trim($sFilePath);
-        $sFilePath = preg_replace('/^\/+/', '', $sFilePath);
-        $sFilePath = preg_replace('/\/+$/', '', $sFilePath);
-        $sFilePath = trim($sFilePath);
-        $sFilePath = preg_replace('/ +/', '', $sFilePath);
-        $sFilePath .= '/';
-
-        return $sMediaPath.$sFilePath;
     }
 
     /**
@@ -114,16 +98,8 @@ class GenerateXML
      */
     protected function setShopElement()
     {
-        if (empty($this->arShopData) || !is_array($this->arShopData) || empty($this->obXMLWriter)) {
-            return;
-        }
-
         $arCurrencyList = array_get($this->arShopData, 'currencies', []);
         $arCategoryList = array_get($this->arShopData, 'categories', []);
-
-        if (empty($arCurrencyList) || empty($arCategoryList)) {
-            return;
-        }
 
         // <name>
         $this->obXMLWriter->writeElement('name', array_get($this->arShopData, 'name'));
@@ -143,35 +119,41 @@ class GenerateXML
         // <email_agency>
         $this->obXMLWriter->writeElement('email', array_get($this->arShopData, 'email_agency'));
         // </email_agency>
-        // <currencies>
-        $this->obXMLWriter->startElement('currencies');
-        // </currencies>
-        foreach ($arCurrencyList as $arCurrency) {
-            // <currency id='' rate=''>
-            $this->obXMLWriter->startElement('currency');
-            $this->obXMLWriter->writeAttribute('id', array_get($arCurrency, 'id'));
-            $this->obXMLWriter->writeAttribute('rate', array_get($arCurrency, 'rate'));
-            $this->obXMLWriter->endElement();
-            // </currency>
-        }
-        // </currencies>
-        $this->obXMLWriter->endElement();
-        // <categories>
-        $this->obXMLWriter->startElement('categories');
-        foreach ($arCategoryList as $arCategory) {
-            $iParentId = array_get($arCategory, 'parent_id');
-            // <category id='' parentId=''>
-            $this->obXMLWriter->startElement('category');
-            $this->obXMLWriter->writeAttribute('id', array_get($arCategory, 'id'));
-            if (!empty($iParentId)) {
-                $this->obXMLWriter->writeAttribute('parentId', array_get($arCategory, 'parent_id'));
+
+        if (!empty($arCurrencyList)) {
+            // <currencies>
+            $this->obXMLWriter->startElement('currencies');
+            // </currencies>
+            foreach ($arCurrencyList as $arCurrency) {
+                // <currency id='' rate=''>
+                $this->obXMLWriter->startElement('currency');
+                $this->obXMLWriter->writeAttribute('id', array_get($arCurrency, 'id'));
+                $this->obXMLWriter->writeAttribute('rate', array_get($arCurrency, 'rate'));
+                $this->obXMLWriter->endElement();
+                // </currency>
             }
-            $this->obXMLWriter->text(array_get($arCategory, 'name'));
+            // </currencies>
             $this->obXMLWriter->endElement();
-            // </category>
         }
-        // </categories>
-        $this->obXMLWriter->endElement();
+
+        if (!empty($arCategoryList)) {
+            // <categories>
+            $this->obXMLWriter->startElement('categories');
+            foreach ($arCategoryList as $arCategory) {
+                $iParentId = array_get($arCategory, 'parent_id');
+                // <category id='' parentId=''>
+                $this->obXMLWriter->startElement('category');
+                $this->obXMLWriter->writeAttribute('id', array_get($arCategory, 'id'));
+                if (!empty($iParentId)) {
+                    $this->obXMLWriter->writeAttribute('parentId', array_get($arCategory, 'parent_id'));
+                }
+                $this->obXMLWriter->text(array_get($arCategory, 'name'));
+                $this->obXMLWriter->endElement();
+                // </category>
+            }
+            // </categories>
+            $this->obXMLWriter->endElement();
+        }
     }
 
     /**
@@ -179,10 +161,6 @@ class GenerateXML
      */
     protected function setOffersElement()
     {
-        if (empty($this->arOffersData) || !is_array($this->arOffersData) || empty($this->obXMLWriter)) {
-            return;
-        }
-
         // <offers>
         $this->obXMLWriter->startElement('offers');
         foreach ($this->arOffersData as $arOffer) {
@@ -199,10 +177,6 @@ class GenerateXML
      */
     protected function setOfferElement($arOffer)
     {
-        if (empty($arOffer) || !is_array($arOffer)) {
-            return;
-        }
-
         $fOldPrice      = array_get($arOffer, 'old_price');
         $sBrandName     = array_get($arOffer, 'brand_name');
         $arImageList    = array_get($arOffer, 'images', []);
@@ -277,16 +251,13 @@ class GenerateXML
      */
     protected function save()
     {
-        $sMediaPath = self::getMediaPath();
-
+        $sMediaPath = self::getFilePath();
         $sFilePath = storage_path($sMediaPath);
 
-        if (!file_exists($sFilePath)) {
-            mkdir($sFilePath, 0777, true);
+        if (file_exists($sFilePath)) {
+            unlink($sFilePath);
         }
 
-        $sFile = $sFilePath.self::FILE_NAME;
-
-        File::put($sFile, $this->sContent);
+        File::put($sFilePath, $this->sContent);
     }
 }

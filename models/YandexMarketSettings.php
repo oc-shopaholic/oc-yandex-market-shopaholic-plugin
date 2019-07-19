@@ -1,5 +1,6 @@
 <?php namespace Lovata\YandexMarketShopaholic\Models;
 
+use Lang;
 use System\Classes\PluginManager;
 use October\Rain\Database\Traits\Validation;
 
@@ -23,12 +24,12 @@ class YandexMarketSettings extends CommonSettings
     const SETTINGS_CODE = 'lovata_shopaholic_yandex_market_export_settings';
 
     const RATE_DEFAULT = 'DEFAULT';
-    const RATE_CBRF    = 'CBRF';
-    const RATE_NBU     = 'NBU';
-    const RATE_NBK     = 'NBK';
-    const RATE_CB      = 'CB';
+    const RATE_CBRF = 'CBRF';
+    const RATE_NBU = 'NBU';
+    const RATE_NBK = 'NBK';
+    const RATE_CB = 'CB';
 
-    const CODE_OFFER   = 'offer';
+    const CODE_OFFER = 'offer';
     const CODE_PRODUCT = 'product';
 
     /**
@@ -39,7 +40,7 @@ class YandexMarketSettings extends CommonSettings
      * @var array
      */
     public $rules = [
-        'short_store_name'    => 'required',
+        'short_store_name'   => 'required',
         'full_company_name'  => 'required',
         'store_homepage_url' => 'required',
         'offers_rate'        => 'required|integer',
@@ -49,7 +50,7 @@ class YandexMarketSettings extends CommonSettings
      * @var array
      */
     public $attributeNames = [
-        'short_store_name'    => 'lovata.yandexmarketshopaholic::lang.field.short_store_name',
+        'short_store_name'   => 'lovata.yandexmarketshopaholic::lang.field.short_store_name',
         'full_company_name'  => 'lovata.yandexmarketshopaholic::lang.field.full_company_name',
         'store_homepage_url' => 'lovata.yandexmarketshopaholic::lang.field.store_homepage_url',
         'offers_rate'        => 'lovata.yandexmarketshopaholic::lang.field.offers_rate',
@@ -62,21 +63,7 @@ class YandexMarketSettings extends CommonSettings
      */
     public function getCurrencyOptions()
     {
-        $obCurrencyList = Currency::all();
-
-        $arResult = [];
-
-        if ($obCurrencyList->isEmpty()) {
-            return $arResult;
-        }
-
-        foreach ($obCurrencyList as $obCurrency) {
-            if ($obCurrency->is_default) {
-                continue;
-            }
-
-            $arResult[$obCurrency->id] = $obCurrency->name;
-        }
+        $arResult = (array) Currency::where('is_default', false)->lists('name', 'id');
 
         return $arResult;
     }
@@ -102,11 +89,11 @@ class YandexMarketSettings extends CommonSettings
      *
      * @return array
      */
-    public function getWhereToGetTheImagesOptions()
+    public function getGetImagesFromOptions()
     {
         return [
-            self::CODE_OFFER   => trans('lovata.shopaholic::lang.field.offer'),
-            self::CODE_PRODUCT => trans('lovata.toolbox::lang.field.product'),
+            self::CODE_OFFER   => Lang::get('lovata.shopaholic::lang.field.offer'),
+            self::CODE_PRODUCT => Lang::get('lovata.toolbox::lang.field.product'),
         ];
     }
 
@@ -121,7 +108,7 @@ class YandexMarketSettings extends CommonSettings
             return [];
         }
 
-        $arPropertyList = \Lovata\PropertiesShopaholic\Models\Property::lists('name', 'id');
+        $arPropertyList = (array) \Lovata\PropertiesShopaholic\Models\Property::active()->lists('name', 'id');
 
         return $arPropertyList;
     }

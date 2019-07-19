@@ -1,32 +1,34 @@
 <?php namespace Lovata\YandexMarketShopaholic\Classes\Helper;
 
 use Event;
-use Lovata\PropertiesShopaholic\Classes\Item\PropertyItem;
-use Lovata\PropertiesShopaholic\Classes\Item\PropertyValueItem;
-use Lovata\Shopaholic\Classes\Collection\ProductCollection;
-use Lovata\Shopaholic\Classes\Collection\CategoryCollection;
+use System\Classes\PluginManager;
+
+use Lovata\Shopaholic\Models\Currency;
 use Lovata\Shopaholic\Classes\Item\CategoryItem;
 use Lovata\Shopaholic\Classes\Item\OfferItem;
 use Lovata\Shopaholic\Classes\Item\ProductItem;
-use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings as Config;
-use Lovata\Shopaholic\Models\Currency;
-use System\Classes\PluginManager;
+use Lovata\Shopaholic\Classes\Collection\ProductCollection;
+use Lovata\Shopaholic\Classes\Collection\CategoryCollection;
+
+use Lovata\PropertiesShopaholic\Classes\Item\PropertyItem;
+use Lovata\PropertiesShopaholic\Classes\Item\PropertyValueItem;
+use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings;
 
 /**
- * Class DataCollection
+ * Class ExportCatalogHelper
  *
  * @package Lovata\YandexMarketShopaholic\Classes\Helper
  * @author  Sergey Zakharevich, s.zakharevich@lovata.com, LOVATA Group
  */
-class DataCollection
+class ExportCatalogHelper
 {
-    const EVENT_YANDEX_MARKET_SHOP_DATA  = 'shopaholic.yandex.market.shop.data';
+    const EVENT_YANDEX_MARKET_SHOP_DATA = 'shopaholic.yandex.market.shop.data';
     const EVENT_YANDEX_MARKET_OFFER_DATA = 'shopaholic.yandex.market.offer.data';
 
     /**
      * @var array
      */
-    protected $arConfig = [];
+    protected $arYandexMarketSettings = [];
 
     /**
      * @var array
@@ -76,7 +78,10 @@ class DataCollection
      *     ],
      * ]
      */
-    protected $arData = [];
+    protected $arData = [
+        'shop'   => [],
+        'offers' => [],
+    ];
 
     /**
      * @var Currency
@@ -84,15 +89,16 @@ class DataCollection
     protected $obDefaultCurrency;
 
     /**
-     * Generate
+     * Generate XML file
      */
-    public function generate()
+    public function run()
     {
+        //Prepare data
         $this->initShopData();
         $this->initProductListData();
 
+        //Generate XML file
         $obGenerateXML = new GenerateXML();
-
         $obGenerateXML->generate($this->arData);
     }
 
@@ -101,25 +107,31 @@ class DataCollection
      */
     protected function initShopData()
     {
-        if (!is_array($this->arData)) {
-            return;
-        }
-
-        array_set($this->arData, 'shop.name', Config::getValue('short_store_name'));
-        array_set($this->arData, 'shop.company', Config::getValue('full_company_name'));
-        array_set($this->arData, 'shop.url', Config::getValue('store_homepage_url'));
+        array_set($this->arData, 'shop.name', YandexMarketSettings::getValue('short_store_name'));
+        array_set($this->arData, 'shop.company', YandexMarketSettings::getValue('full_company_name'));
+        array_set($this->arData, 'shop.url', YandexMarketSettings::getValue('store_homepage_url'));
         array_set($this->arData, 'shop.platform', 'October CMS');
-        array_set($this->arData, 'shop.agency', Config::getValue('agency'));
-        array_set($this->arData, 'shop.email_agency', Config::getValue('email_agency'));
-        array_set($this->arData, 'shop.currencies', $this->currencies());
+        array_set($this->arData, 'shop.agency', YandexMarketSettings::getValue('agency'));
+        array_set($this->arData, 'shop.email_agency', YandexMarketSettings::getValue('email_agency'));
+        array_set($this->arData, 'shop.currencies', $this->getCurrencyList());
 
         $this->initCategoryList();
 
-        $arEventShopData = Event::fire(self::EVENT_YANDEX_MARKET_SHOP_DATA, [array_get($this->arData, 'shop')], true);
-
-        if (!empty($arEventShopData) && is_array($arEventShopData)) {
-            array_set($this->arData, 'shop', $arEventShopData);
+        $arShopData = array_get($this->arData, 'shop');
+        $arEventData = Event::fire(self::EVENT_YANDEX_MARKET_SHOP_DATA, [$arShopData]);
+        if (empty($arEventData)) {
+            return;
         }
+
+        foreach ($arEventData as $arEventShopData) {
+            if (empty($arEventShopData) || !is_array($arEventShopData)) {
+                continue;
+            }
+
+            $arShopData = array_merge($arShopData, $arEventShopData);
+        }
+
+        $this->arData['shop'] = $arShopData;
     }
 
     /**
@@ -127,35 +139,28 @@ class DataCollection
      */
     protected function initCategoryList()
     {
-        if (!is_array($this->arData)) {
-            return;
-        }
-
         $obCategoryList = CategoryCollection::make()->active();
-
         if ($obCategoryList->isEmpty()) {
             return;
         }
 
         $arCategoryList = [];
-        /** @var CategoryItem $obCategory */
-        foreach ($obCategoryList as $obCategory) {
-            $obProductList = ProductCollection::make()->category($obCategory->id, true)->active();
-
-            if ($obProductList->isEmpty()) {
+        /** @var CategoryItem $obCategoryItem */
+        foreach ($obCategoryList as $obCategoryItem) {
+            if ($obCategoryItem->product_count == 0) {
                 continue;
             }
 
-            $arCategory = [
-                'id'   => $obCategory->id,
-                'name' => $obCategory->name,
+            $arCategoryData = [
+                'id'   => $obCategoryItem->id,
+                'name' => $obCategoryItem->name,
             ];
 
-            if ($obCategory->parent->isNotEmpty()) {
-                $arCategory['parent_id'] = $obCategory->parent->id;
+            if ($obCategoryItem->parent->isNotEmpty()) {
+                $arCategoryData['parent_id'] = $obCategoryItem->parent->id;
             }
 
-            $arCategoryList[] = $arCategory;
+            $arCategoryList[] = $arCategoryData;
         }
 
         array_set($this->arData, 'shop.categories', $arCategoryList);
@@ -166,12 +171,7 @@ class DataCollection
      */
     protected function initProductListData()
     {
-        if (!is_array($this->arData)) {
-            return;
-        }
-
         $obProductList = ProductCollection::make()->active();
-
         if ($obProductList->isEmpty()) {
             return;
         }
@@ -189,12 +189,11 @@ class DataCollection
      */
     protected function initOfferListData($obProduct)
     {
-        if (empty($obProduct) || !$obProduct instanceof ProductItem || $obProduct->category->isEmpty()) {
+        if ($obProduct->category->isEmpty()) {
             return;
         }
 
         $obOfferList = $obProduct->offer;
-
         if ($obOfferList->isEmpty()) {
             return;
         }
@@ -207,45 +206,39 @@ class DataCollection
     /**
      * Init offer
      *
-     * @param OfferItem $obOffer
+     * @param OfferItem   $obOffer
      * @param ProductItem $obProduct
      */
     protected function initOffer($obOffer, $obProduct)
     {
-        $bOffer   = empty($obOffer) || !$obOffer instanceof OfferItem;
-        $bProduct = empty($obProduct) || !$obProduct instanceof ProductItem;
-        if ($bOffer || $bProduct || !is_array($this->arData) || empty($this->obDefaultCurrency)) {
-            return;
-        }
-
-
-
-        $arOfferList = array_pull($this->arData, 'offers', []);
-        $arOffer = [
+        $arOfferData = [
             'name'           => $obOffer->name,
-            'rate'           => Config::getValue('offers_rate', ''),
+            'rate'           => YandexMarketSettings::getValue('offers_rate', ''),
             'url'            => $obProduct->getPageUrl(),
             'id'             => $obOffer->id,
             'price'          => $obOffer->price,
-            'currency_id'    => $this->obDefaultCurrency->code,
+            'currency_id'    => !empty($this->obDefaultCurrency) ? $this->obDefaultCurrency->code : '',
             'category_id'    => $obProduct->category_id,
             'images'         => $this->getOfferImages($obOffer, $obProduct),
             'properties'     => $this->getOfferProperties($obOffer),
-            'auto_discounts' => Config::getValue('field_enable_auto_discounts', false),
+            'auto_discounts' => YandexMarketSettings::getValue('field_enable_auto_discounts', false),
             'description'    => $obOffer->preview_text,
             'brand_name'     => $this->getBrandName($obProduct),
             'old_price'      => $this->getOfferOldPrice($obOffer),
         ];
 
-        $arEventOfferData = Event::fire(self::EVENT_YANDEX_MARKET_OFFER_DATA, [$arOffer], true);
+        $arEventData = Event::fire(self::EVENT_YANDEX_MARKET_OFFER_DATA, [$arOfferData]);
+        if (!empty($arEventData)) {
+            foreach ($arEventData as $arEventOfferData) {
+                if (empty($arEventOfferData) || !is_array($arEventOfferData)) {
+                    continue;
+                }
 
-        if (!empty($arEventOfferData) && is_array($arEventOfferData)) {
-            $arOffer = $arEventOfferData;
+                $arOfferData = array_merge($arOfferData, $arEventOfferData);
+            }
         }
 
-        $arOfferList[] = $arOffer;
-
-        array_set($this->arData, 'offers', $arOfferList);
+        $this->arData['offers'][] = $arOfferData;
     }
 
     /**
@@ -256,8 +249,8 @@ class DataCollection
      */
     protected function getOfferOldPrice($obOffer)
     {
-        $bFieldEnableAutoDiscounts = Config::getValue('field_enable_auto_discounts', false);
-        $bFieldOldPrice            = Config::getValue('field_old_price', false);
+        $bFieldEnableAutoDiscounts = YandexMarketSettings::getValue('field_enable_auto_discounts', false);
+        $bFieldOldPrice = YandexMarketSettings::getValue('field_old_price', false);
         $bOffer = empty($obOffer) || !$obOffer instanceof OfferItem || $obOffer->old_price == 0;
 
         if ($bFieldEnableAutoDiscounts || !$bFieldOldPrice || $bOffer) {
@@ -266,6 +259,7 @@ class DataCollection
 
         return $obOffer->old_price;
     }
+
     /**
      * Get brand name
      *
@@ -274,20 +268,17 @@ class DataCollection
      */
     protected function getBrandName($obProduct)
     {
-        $bFieldBrand = Config::getValue('field_brand', false);
+        $bFieldBrand = YandexMarketSettings::getValue('field_brand', false);
+        $sResult = $bFieldBrand ? (string) $obProduct->brand->name : '';
 
-        if (!$bFieldBrand || !$obProduct instanceof ProductItem || $obProduct->brand->isEmpty()) {
-            return '';
-        }
-
-        return $obProduct->brand->name;
+        return $sResult;
     }
 
     /**
      * Get offer images
      *
-     * @param OfferItem|OfferItem $obOffer
-     * @param OfferItem|ProductItem $obProduct
+     * @param OfferItem   $obOffer
+     * @param ProductItem $obProduct
      *
      * @return array
      */
@@ -295,39 +286,29 @@ class DataCollection
     {
         $arResult = [];
 
-        $sCodeModelForImages = Config::getValue('code_model_for_images', '');
-
+        $sCodeModelForImages = YandexMarketSettings::getValue('code_model_for_images', '');
         if (empty($sCodeModelForImages)) {
             return $arResult;
         }
 
-        if (Config::CODE_OFFER == $sCodeModelForImages) {
+        if (YandexMarketSettings::CODE_OFFER == $sCodeModelForImages) {
             $obItem = $obOffer;
         } else {
             $obItem = $obProduct;
         }
 
-        if ( empty($obItem) || (!$obItem instanceof OfferItem && !$obItem instanceof ProductItem)) {
+        /** @var OfferItem|ProductItem $obItem */
+        if (!empty($obItem->preview_image_yandex)) {
+            $arResult[] = $obItem->preview_image_yandex->path;
+        }
+
+        $bFieldImages = YandexMarketSettings::getValue('field_images', false);
+
+        if (!$bFieldImages) {
             return $arResult;
         }
 
-        $obModel = $obItem->getObject();
-
-        if (empty($obModel)) {
-            return $arResult;
-        }
-
-        if (!empty($obModel->preview_image_yandex)) {
-            $arResult[] = $obModel->preview_image_yandex->path;
-        }
-
-        $bFieldImages = Config::getValue('field_images', false);
-
-        if (!$bFieldImages || $obModel->images_yandex->isEmpty()) {
-            return $arResult;
-        }
-
-        foreach ($obModel->images_yandex as $obImage) {
+        foreach ($obItem->images_yandex as $obImage) {
             $arResult[] = $obImage->path;
         }
 
@@ -344,14 +325,14 @@ class DataCollection
     {
         $arResult = [];
 
-        $bHasPlugin          = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
-        $arAvailableProperty = Config::getValue('field_offer_properties', []);
+        $bHasPlugin = PluginManager::instance()->hasPlugin('Lovata.PropertiesShopaholic');
+        $arAvailableProperty = (array) YandexMarketSettings::getValue('field_offer_properties', []);
 
-        if (!$bHasPlugin || empty($obOffer) || !$obOffer instanceof OfferItem || !is_array($arAvailableProperty)) {
+        if (!$bHasPlugin || empty($arAvailableProperty)) {
             return $arResult;
         }
-        $obPropertyList = $obOffer->property;
 
+        $obPropertyList = $obOffer->property->intersect($arAvailableProperty);
         if ($obPropertyList->isEmpty()) {
             return $arResult;
         }
@@ -359,7 +340,7 @@ class DataCollection
 
         /** @var PropertyItem $obPropertyItem */
         foreach ($obPropertyList as $obPropertyItem) {
-            if (!$obPropertyItem->hasValue() || !in_array($obPropertyItem->id, $arAvailableProperty)) {
+            if (!$obPropertyItem->hasValue()) {
                 continue;
             }
 
@@ -380,17 +361,13 @@ class DataCollection
     /**
      * Get property
      *
-     * @param PropertyItem $obPropertyItem
+     * @param PropertyItem      $obPropertyItem
      * @param PropertyValueItem $obPropertyValueItem
      *
      * @return array
      */
     public function getProperty($obPropertyItem, $obPropertyValueItem)
     {
-        if (!$obPropertyItem instanceof PropertyItem || !$obPropertyValueItem instanceof PropertyValueItem) {
-            return [];
-        }
-
         $arResult = [
             'name'  => $obPropertyItem->name,
             'value' => $obPropertyValueItem->value,
@@ -408,18 +385,17 @@ class DataCollection
      *
      * @return array
      */
-    protected function currencies()
+    protected function getCurrencyList()
     {
         $arResult = [];
         $this->obDefaultCurrency = Currency::isDefault()->first();
-
         if (empty($this->obDefaultCurrency)) {
             return $arResult;
         }
 
-        $bUseMainCurrencyOnly = Config::getValue('use_main_currency_only', false);
+        $bUseMainCurrencyOnly = YandexMarketSettings::getValue('use_main_currency_only', false);
         if ($bUseMainCurrencyOnly) {
-            $arResult[] = ['id'   => $this->obDefaultCurrency->code, 'rate' => '1'];
+            $arResult[] = ['id' => $this->obDefaultCurrency->code, 'rate' => '1'];
 
             return $arResult;
         }
@@ -431,7 +407,6 @@ class DataCollection
 
         foreach ($obCurrencyList as $obCurrency) {
             $sRate = $this->getCurrencyRate($obCurrency);
-
             if (empty($sRate)) {
                 continue;
             }
@@ -452,36 +427,29 @@ class DataCollection
      */
     protected function getCurrencyRate($obCurrency)
     {
-        if (empty($obCurrency) || !$obCurrency instanceof Currency) {
-            return '';
-        }
-
         if ($obCurrency->is_default) {
             return '1';
         }
 
-        $bDefaultCurrencyRates = Config::getValue('default_currency_rates', true);
-
+        $bDefaultCurrencyRates = YandexMarketSettings::getValue('default_currency_rates', true);
         if ($bDefaultCurrencyRates) {
             return $obCurrency->rate;
         }
 
-        $arConfigRate = (array) Config::getValue('currency_rates', []);
-        if (empty($arConfigRate) || !is_array($arConfigRate)) {
+        $arYandexMarketSettingsRate = (array) YandexMarketSettings::getValue('currency_rates', []);
+        if (empty($arYandexMarketSettingsRate) || !is_array($arYandexMarketSettingsRate)) {
             return '';
         }
 
         $sRate = '';
-
-        foreach ($arConfigRate as $arRate) {
+        foreach ($arYandexMarketSettingsRate as $arRate) {
             $iCurrencyId = array_get($arRate, 'currency_id', '');
-            $sRate       = array_get($arRate, 'rate', '');
-
+            $sRate = array_get($arRate, 'rate', '');
             if (empty($iCurrencyId) || $iCurrencyId != $obCurrency->id) {
                 continue;
             }
 
-            if ($sRate == Config::RATE_DEFAULT) {
+            if ($sRate == YandexMarketSettings::RATE_DEFAULT) {
                 return $obCurrency->rate;
             }
         }

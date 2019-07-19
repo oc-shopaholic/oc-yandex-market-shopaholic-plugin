@@ -1,25 +1,25 @@
 <?php namespace Lovata\YandexMarketShopaholic\Classes\Console;
 
 use Illuminate\Console\Command;
-use Lovata\YandexMarketShopaholic\Classes\Helper\DataCollection;
+use Lovata\YandexMarketShopaholic\Classes\Helper\ExportCatalogHelper;
 
 /**
- * Class CatalogExportForYandexMarkets
+ * Class CatalogExportForYandexMarket
  *
  * @package Lovata\YandexMarketShopaholic\Classes\Console
  * @author  Sergey Zakharevich, s.zakharevich@lovata.com, LOVATA Group
  */
-class CatalogExportForYandexMarkets extends Command
+class CatalogExportForYandexMarket extends Command
 {
     /**
      * @var string command name.
      */
-    protected $name = 'shopaholic:catalog_export_to_yandex';
+    protected $name = 'shopaholic:catalog_export.yandex_market';
 
     /**
      * @var string The console command description.
      */
-    protected $description = 'Run catalog export to Yandex markets';
+    protected $description = 'Generate xml file for Yandex.Market';
 
     /**
      * Execute the console command.
@@ -27,7 +27,7 @@ class CatalogExportForYandexMarkets extends Command
      */
     public function handle()
     {
-        $obDataCollection = new DataCollection();
-        $obDataCollection->generate();
+        $obDataCollection = new ExportCatalogHelper();
+        $obDataCollection->run();
     }
 }

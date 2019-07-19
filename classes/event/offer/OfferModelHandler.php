@@ -10,26 +10,17 @@ use Lovata\Shopaholic\Models\Offer;
  */
 class OfferModelHandler
 {
-    /** @var Offer */
-    protected $obElement;
-
     /**
-     * @param \Illuminate\Events\Dispatcher $obEvent
+     * Extend Offer model
      */
-    public function subscribe($obEvent)
-    {
-        $this->extendModel();
-    }
-
-    /**
-     * Extend Model object
-     */
-    protected function extendModel()
+    public function subscribe()
     {
         Offer::extend(function ($obOffer) {
             /** @var Offer $obOffer */
             $obOffer->attachOne['preview_image_yandex'] = 'System\Models\File';
             $obOffer->attachMany['images_yandex']       = 'System\Models\File';
+
+            $obOffer->addCachedField(['preview_image_yandex', 'images_yandex']);
         });
     }
 }

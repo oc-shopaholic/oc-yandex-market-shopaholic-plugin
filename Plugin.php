@@ -4,7 +4,7 @@ use Event;
 use System\Classes\PluginBase;
 
 // Command
-use Lovata\YandexMarketShopaholic\Classes\Console\CatalogExportForYandexMarkets;
+use Lovata\YandexMarketShopaholic\Classes\Console\CatalogExportForYandexMarket;
 
 // Offer event
 use Lovata\YandexMarketShopaholic\Classes\Event\Offer\ExtendOfferFieldsHandler;
@@ -29,8 +29,8 @@ class Plugin extends PluginBase
     {
         return [
             'config'    => [
-                'label'       => 'lovata.yandexmarketshopaholic::lang.menu.yandexmarketsettings',
-                'description' => '',
+                'label'       => 'lovata.yandexmarketshopaholic::lang.menu.settings',
+                'description' => 'lovata.yandexmarketshopaholic::lang.menu.settings_description',
                 'category'    => 'lovata.shopaholic::lang.tab.settings',
                 'icon'        => 'icon-upload',
                 'class'       => 'Lovata\YandexMarketShopaholic\Models\YandexMarketSettings',
@@ -58,7 +58,7 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-        $this->registerConsoleCommand('shopaholic:catalog_export_to_yandex', CatalogExportForYandexMarkets::class);
+        $this->registerConsoleCommand('shopaholic:catalog_export.yandex_market', CatalogExportForYandexMarket::class);
     }
 
     /**

@@ -10,26 +10,17 @@ use Lovata\Shopaholic\Models\Product;
  */
 class ProductModelHandler
 {
-    /** @var Product */
-    protected $obElement;
-
     /**
-     * @param \Illuminate\Events\Dispatcher $obEvent
+     * Extend Product model
      */
-    public function subscribe($obEvent)
-    {
-        $this->extendModel();
-    }
-
-    /**
-     * Extend Model object
-     */
-    protected function extendModel()
+    public function subscribe()
     {
         Product::extend(function ($obProduct) {
             /** @var Product $obProduct */
             $obProduct->attachOne['preview_image_yandex'] = 'System\Models\File';
-            $obProduct->attachMany['images_yandex']       = 'System\Models\File';
+            $obProduct->attachMany['images_yandex'] = 'System\Models\File';
+
+            $obProduct->addCachedField(['preview_image_yandex', 'images_yandex']);
         });
     }
 }
