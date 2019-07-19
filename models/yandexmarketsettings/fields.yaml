@@ -1,0 +1,145 @@
+fields:
+tabs:
+    icons:
+        lovata.toolbox::lang.tab.settings: icon-cogs
+        lovata.shopaholic::lang.tab.offer: icon-briefcase
+    fields:
+        short_store_name:
+            label: 'lovata.yandexmarketshopaholic::lang.field.short_store_name'
+            placeholder: 'lovata.yandexmarketshopaholic::lang.field.short_store_name_placeholder'
+            tab: 'lovata.toolbox::lang.tab.settings'
+            type: text
+            span: left
+            required: 1
+        full_company_name:
+            label: 'lovata.yandexmarketshopaholic::lang.field.full_company_name'
+            placeholder: 'lovata.yandexmarketshopaholic::lang.field.full_company_name_placeholder'
+            tab: 'lovata.toolbox::lang.tab.settings'
+            type: text
+            span: right
+            required: 1
+        store_homepage_url:
+            label: 'lovata.yandexmarketshopaholic::lang.field.store_homepage_url'
+            placeholder: 'lovata.yandexmarketshopaholic::lang.field.store_homepage_url_placeholder'
+            tab: 'lovata.toolbox::lang.tab.settings'
+            type: text
+            span: left
+            required: 1
+        agency:
+            label: 'lovata.yandexmarketshopaholic::lang.field.agency'
+            type: text
+            span: left
+            required: 0
+            tab: 'lovata.toolbox::lang.tab.settings'
+            placeholder: 'lovata.yandexmarketshopaholic::lang.field.agency_placeholder'
+        email_agency:
+            label: 'lovata.yandexmarketshopaholic::lang.field.email_agency'
+            type: text
+            span: right
+            required: 0
+            tab: 'lovata.toolbox::lang.tab.settings'
+            placeholder: 'lovata.yandexmarketshopaholic::lang.field.email_agency_placeholder'
+        use_main_currency_only:
+            label: 'lovata.yandexmarketshopaholic::lang.field.use_main_currency_only'
+            type: checkbox
+            span: left
+            required: 1
+            tab: 'lovata.toolbox::lang.tab.settings'
+            default: true
+        default_currency_rates:
+            label: 'lovata.yandexmarketshopaholic::lang.field.default_currency_rates'
+            type: checkbox
+            span: left
+            required: 1
+            tab: 'lovata.toolbox::lang.tab.settings'
+            default: true
+            trigger:
+                action: hide
+                field: use_main_currency_only
+                condition: checked
+        currency_rates:
+            label: 'lovata.yandexmarketshopaholic::lang.field.currency_rates'
+            type: repeater
+            span: left
+            required: 1
+            tab: 'lovata.toolbox::lang.tab.settings'
+            form:
+                fields:
+                    currency_id:
+                        label: 'lovata.shopaholic::lang.field.currency'
+                        type: dropdown
+                        span: left
+                        showSearch: true
+                        required: 1
+                        options: getCurrencyOptions
+                    rate:
+                        label: 'lovata.shopaholic::lang.field.rate'
+                        type: dropdown
+                        span: right
+                        showSearch: true
+                        required: 1
+                        options: getRateOptions
+            trigger:
+                action: hide
+                field: default_currency_rates
+                condition: checked
+        offers_rate:
+            label: 'lovata.yandexmarketshopaholic::lang.field.offers_rate'
+            type: number
+            span: left
+            required: 1
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            placeholder: 'lovata.yandexmarketshopaholic::lang.field.offers_rate'
+        section_management_additional_fields_offer:
+            label: 'lovata.yandexmarketshopaholic::lang.field.section_management_additional_fields_offer'
+            type: section
+            span: left
+            tab: 'lovata.shopaholic::lang.tab.offer'
+        field_brand:
+            label: 'lovata.shopaholic::lang.field.brand'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+        field_old_price:
+            label: 'lovata.shopaholic::lang.field.old_price'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+        field_enable_auto_discounts:
+            label: 'lovata.yandexmarketshopaholic::lang.field.field_enable_auto_discounts'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+            trigger:
+                action: show
+                field: field_old_price
+                condition: unchecked
+        code_model_for_images:
+            label: 'lovata.yandexmarketshopaholic::lang.field.code_model_for_images'
+            type: dropdown
+            emptyOption: 'lovata.toolbox::lang.field.empty'
+            span: left
+            required: 1
+            options: getGetImagesFromOptions
+            tab: 'lovata.shopaholic::lang.tab.offer'
+        field_images:
+            label: 'lovata.toolbox::lang.field.images'
+            type: checkbox
+            span: left
+            required: 0
+            tab: 'lovata.shopaholic::lang.tab.offer'
+            default: false
+        field_offer_properties:
+            label: 'lovata.propertiesshopaholic::lang.field.properties'
+            type: checkboxlist
+            span: left
+            required: 0
+            options: getOfferPropertiesOptions
+            tab: 'lovata.shopaholic::lang.tab.offer'
+
