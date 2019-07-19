@@ -193,7 +193,7 @@ class GenerateXML
         $this->obXMLWriter->writeElement('url', array_get($arOffer, 'url'));
         // </url>
         // <enable_auto_discounts>
-        $this->obXMLWriter->writeElement('enable_auto_discounts', array_get($arOffer, 'auto_discounts'));
+        $this->obXMLWriter->writeElement('enable_auto_discounts', (int) array_get($arOffer, 'auto_discounts'));
         // </enable_auto_discounts>
         if (!empty($sBrandName)) {
             // <vendor>
