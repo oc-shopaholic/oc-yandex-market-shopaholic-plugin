@@ -16,4 +16,4 @@ You can download generated XML file by `/storage/app/media/yandex_market.xml` pa
 
 © 2019, [LOVATA Group, LLC](https://github.com/lovata) under [GNU GPL v3](https://opensource.org/licenses/GPL-3.0).
 
-Developed by [Sergey Zakharevich](https://github.com/wobqqq).
+Developed by [Sergey Zakharevich](https://github.com/wobqqq), [Andrey Kharanenka](https://github.com/kharanenka).
