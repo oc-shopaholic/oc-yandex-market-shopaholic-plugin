@@ -36,37 +36,28 @@ You can generate YML file this ways:
 
 The generic file can be found here `storage/app/media/yandex_market.xml` by default.
 
-## License
-
-© 2019, [LOVATA Group, LLC](https://github.com/lovata) under [GNU GPL v3](https://opensource.org/licenses/GPL-3.0).
-
-Developed by [Sergey Zakharevich](https://github.com/wobqqq), [Andrey Kharanenka](https://github.com/kharanenka).
-
 ## Live demo
 
 You can try out this plugin on our [demo site](http://demo.shopaholic.one). Sign in to [backend](http://demo.shopaholic.one/backend) using the following credentials:
 * user: manager
 * password: manager
 
-<!-- ## Featured plugins
-
-We recommend to use this plugin with the followings:
-
-* [Filter for Shopaholic](https://octobercms.com/plugin/lovata-filtershopaholic)
-* [Properties for Shopaholic](https://octobercms.com/plugin/lovata-propertiesshopaholic)
-* [Tags for Shopaholic](https://octobercms.com/plugin/lovata-tagsshopaholic) -->
-
 ## What is Shopaholic?
 
-Shopaholic is free most popular e-commerce ecosystem for October CMS, which admitted as **Editor's choice** rank. It follows the similar philosophies of October CMS and Unix like operating systems, where the main focus is to create simple microarchitecture solutions that communicate with each other through smart APIs.
+Shopaholic is free most popular e-commerce ecosystem for October CMS, which admitted as **Editor's choice** rank.
+It follows the similar philosophies of October CMS and Unix like operating systems, where the main focus is to create simple microarchitecture solutions that communicate with each other through smart APIs.
 
-One one hand, this approach allows keeping performance, security, and functionality of the code to a high standard. On the other hand, it provides a clean and smooth back-end UI/UX that isn't over-bloated with the features.
+One one hand, this approach allows keeping performance, security, and functionality of the code to a high standard.
+On the other hand, it provides a clean and smooth back-end UI/UX that isn't over-bloated with the features.
 
 You're welcome to visit official website [shopaholic.one](shopaholic.one)! 
 
 ## Quality standards
 
-We ensure the high quality of our plugins and provide you with full support. All of our plugins have extensive documentation. The quality of our plugins goes through rigorous testing, we have launched automated testing for all of our plugins. Our code conforms with the best writing and structuring practices. All this guarantees the stable work of our plugins after they are updated with new functionality and ensures their smooth integration.
+We ensure the high quality of our plugins and provide you with full support. All of our plugins have extensive documentation.
+The quality of our plugins goes through rigorous testing, we have launched automated testing for all of our plugins.
+Our code conforms with the best writing and structuring practices.
+All this guarantees the stable work of our plugins after they are updated with new functionality and ensures their smooth integration.
 
 ## Get involved
 
