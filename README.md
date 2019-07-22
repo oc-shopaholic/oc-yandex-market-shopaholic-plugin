@@ -14,7 +14,7 @@ Yandex Market for Shopaholic plugin for October CMS allows to:
 Using the Laravel’s CLI is the fastest way to get started. Just run the following commands in a project’s root directory:
 
 ```bash
-php artisan plugin:install lovata.yandexmarketshopaholic
+php artisan plugin:install Lovata.YandexMarketShopaholic
 ```
 
 ### Composer
