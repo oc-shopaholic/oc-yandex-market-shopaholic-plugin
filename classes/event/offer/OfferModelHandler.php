@@ -17,6 +17,9 @@ class OfferModelHandler
     {
         Offer::extend(function ($obOffer) {
             /** @var Offer $obOffer */
+            $obOffer->fillable[] = 'preview_image_yandex';
+            $obOffer->fillable[] = 'images_yandex';
+
             $obOffer->attachOne['preview_image_yandex'] = 'System\Models\File';
             $obOffer->attachMany['images_yandex']       = 'System\Models\File';
 
