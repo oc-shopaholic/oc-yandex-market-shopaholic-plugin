@@ -3,7 +3,6 @@
 use File;
 use XMLWriter;
 use October\Rain\Argon\Argon;
-use Lovata\YandexMarketShopaholic\Models\YandexMarketSettings;
 
 /**
  * Class GenerateXML

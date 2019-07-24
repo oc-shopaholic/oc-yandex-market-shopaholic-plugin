@@ -17,6 +17,9 @@ class ProductModelHandler
     {
         Product::extend(function ($obProduct) {
             /** @var Product $obProduct */
+            $obProduct->fillable[] = 'preview_image_yandex';
+            $obProduct->fillable[] = 'images_yandex';
+
             $obProduct->attachOne['preview_image_yandex'] = 'System\Models\File';
             $obProduct->attachMany['images_yandex'] = 'System\Models\File';
 

@@ -4,9 +4,10 @@
     </h3>
     <button
             type="button"
-            data-request="onGenerateXMLFile"
+            data-request="onGenerateXMLFileYandexMarket"
             class="btn btn-primary icon-upload"
             data-request-update="download: '.download-btn-yandex-market'"
+            data-stripe-load-indicator
             data-request-confirm="<?= e(trans('lovata.yandexmarketshopaholic::lang.message.update_catalog_to_xml_confirm')) ?>"
     >
         <?= e(trans('lovata.yandexmarketshopaholic::lang.button.export_catalog_to_xml')) ?>

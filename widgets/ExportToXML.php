@@ -29,7 +29,7 @@ class ExportToXML extends ReportWidgetBase
     /**
      * Generate xml for yandex market
      */
-    public function onGenerateXMLFile()
+    public function onGenerateXMLFileYandexMarket()
     {
         $obDataCollection = new ExportCatalogHelper();
         $obDataCollection->run();
