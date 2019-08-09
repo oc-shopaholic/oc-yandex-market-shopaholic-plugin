@@ -22,6 +22,11 @@ use Lovata\YandexMarketShopaholic\Classes\Event\Product\ProductModelHandler;
 class Plugin extends PluginBase
 {
     /**
+     * @var array
+     */
+    public $require = ['Lovata.Shopaholic', 'Lovata.Toolbox'];
+
+    /**
      * Register settings
      * @return array
      */
