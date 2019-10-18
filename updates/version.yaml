@@ -2,3 +2,5 @@
     - 'Init plugin'
 1.0.1:
     - 'Updated config for backend fields in Offer, Product models'
+1.0.2:
+    - 'Added require array to Plugin file'
