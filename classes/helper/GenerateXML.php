@@ -12,7 +12,7 @@ use October\Rain\Argon\Argon;
  */
 class GenerateXML
 {
-    const FILE_NAME = 'yandex_market.xml';
+    const FILE_NAME = 'yandex_market.yml';
     const DEFAULT_DIRECTORY = 'app/media/';
 
     /**
@@ -188,6 +188,9 @@ class GenerateXML
         // <name>
         $this->obXMLWriter->writeElement('name', array_get($arOffer, 'name'));
         // </name>
+        // <description>
+        $this->obXMLWriter->writeElement('description', array_get($arOffer, 'description'));
+        // </description>
         // <url>
         $this->obXMLWriter->writeElement('url', array_get($arOffer, 'url'));
         // </url>
