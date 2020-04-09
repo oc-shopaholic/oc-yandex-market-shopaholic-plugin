@@ -222,7 +222,7 @@ class ExportCatalogHelper
             'images'         => $this->getOfferImages($obOffer, $obProduct),
             'properties'     => $this->getOfferProperties($obOffer),
             'auto_discounts' => YandexMarketSettings::getValue('field_enable_auto_discounts', false),
-            'description'    => $obOffer->preview_text,
+            'description'    => $obOffer->description ? $obOffer->description : $obProduct->description,
             'brand_name'     => $this->getBrandName($obProduct),
             'old_price'      => $this->getOfferOldPrice($obOffer),
         ];
