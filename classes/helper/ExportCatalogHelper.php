@@ -216,7 +216,7 @@ class ExportCatalogHelper
             'rate'           => YandexMarketSettings::getValue('offers_rate', ''),
             'url'            => $obProduct->getPageUrl(),
             'id'             => $obOffer->id,
-            'price'          => $obOffer->price,
+            'price'          => $obOffer->price_value,
             'currency_id'    => !empty($this->obDefaultCurrency) ? $this->obDefaultCurrency->code : '',
             'category_id'    => $obProduct->category_id,
             'images'         => $this->getOfferImages($obOffer, $obProduct),
