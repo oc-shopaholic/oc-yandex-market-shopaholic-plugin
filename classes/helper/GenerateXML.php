@@ -188,9 +188,9 @@ class GenerateXML
         // <name>
         $this->obXMLWriter->writeElement('name', array_get($arOffer, 'name'));
         // </name>
-        // <name>
+        // <description>
         $this->obXMLWriter->writeElement('description', array_get($arOffer, 'description'));
-        // </name>
+        // </description>
         // <url>
         $this->obXMLWriter->writeElement('url', array_get($arOffer, 'url'));
         // </url>
