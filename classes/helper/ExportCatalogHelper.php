@@ -299,7 +299,9 @@ class ExportCatalogHelper
 
         /** @var OfferItem|ProductItem $obItem */
         if (!empty($obItem->preview_image_yandex)) {
-            $arResult[] = $obItem->preview_image_yandex->path;
+            $arResult[] = $obItem->preview_image_yandex->path;   
+        } elseif (!empty($obItem->preview_image)) {
+            $arResult[] = $obItem->preview_image->path;
         }
 
         $bFieldImages = YandexMarketSettings::getValue('field_images', false);
@@ -307,9 +309,15 @@ class ExportCatalogHelper
         if (!$bFieldImages) {
             return $arResult;
         }
-
-        foreach ($obItem->images_yandex as $obImage) {
-            $arResult[] = $obImage->path;
+           
+        if (!empty($obItem->images_yandex)) {
+            foreach ($obItem->images_yandex as $obImage) {
+                $arResult[] = $obImage->path;
+            }
+        } else {
+            foreach ($obItem->images as $obImage) {
+                $arResult[] = $obImage->path;
+            }
         }
 
         return $arResult;
