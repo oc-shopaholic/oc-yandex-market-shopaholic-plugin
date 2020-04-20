@@ -216,13 +216,13 @@ class ExportCatalogHelper
             'rate'           => YandexMarketSettings::getValue('offers_rate', ''),
             'url'            => $obProduct->getPageUrl(),
             'id'             => $obOffer->id,
-            'price'          => $obOffer->price,
+            'price'          => $obOffer->price_value,
             'currency_id'    => !empty($this->obDefaultCurrency) ? $this->obDefaultCurrency->code : '',
             'category_id'    => $obProduct->category_id,
             'images'         => $this->getOfferImages($obOffer, $obProduct),
             'properties'     => $this->getOfferProperties($obOffer),
             'auto_discounts' => YandexMarketSettings::getValue('field_enable_auto_discounts', false),
-            'description'    => $obOffer->preview_text,
+            'description'    => $obOffer->description ? $obOffer->description : $obProduct->description,
             'brand_name'     => $this->getBrandName($obProduct),
             'old_price'      => $this->getOfferOldPrice($obOffer),
         ];
@@ -299,7 +299,9 @@ class ExportCatalogHelper
 
         /** @var OfferItem|ProductItem $obItem */
         if (!empty($obItem->preview_image_yandex)) {
-            $arResult[] = $obItem->preview_image_yandex->path;
+            $arResult[] = $obItem->preview_image_yandex->path;   
+        } elseif (!empty($obItem->preview_image)) {
+            $arResult[] = $obItem->preview_image->path;
         }
 
         $bFieldImages = YandexMarketSettings::getValue('field_images', false);
@@ -307,9 +309,15 @@ class ExportCatalogHelper
         if (!$bFieldImages) {
             return $arResult;
         }
-
-        foreach ($obItem->images_yandex as $obImage) {
-            $arResult[] = $obImage->path;
+           
+        if (!empty($obItem->images_yandex)) {
+            foreach ($obItem->images_yandex as $obImage) {
+                $arResult[] = $obImage->path;
+            }
+        } else {
+            foreach ($obItem->images as $obImage) {
+                $arResult[] = $obImage->path;
+            }
         }
 
         return $arResult;
