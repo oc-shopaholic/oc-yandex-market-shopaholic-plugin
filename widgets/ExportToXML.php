@@ -48,9 +48,12 @@ class ExportToXML extends ReportWidgetBase
     {
         $sFilePath = GenerateXML::getFilePath();
         $sFullFilePath = storage_path($sFilePath);
+
         if (!file_exists($sFullFilePath)) {
             return null;
         }
+
+        $sFilePath = GenerateXML::DIRECTORY_NAME.'/'.GenerateXML::FILE_NAME;
 
         $sStorageFilePath = Storage::url($sFilePath);
 
