@@ -26,6 +26,7 @@
         'code_model_for_images'                      => 'Get images from:',
         'section_management_additional_fields_offer' => 'Additional fields',
         'section_yandex_market'                      => 'Yandex.Market',
+        'field_price_type'                           => 'Price type',
     ],
     'button'     => [
         'export_catalog_to_xml' => 'Run export',

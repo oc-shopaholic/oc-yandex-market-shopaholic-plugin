@@ -26,6 +26,7 @@
         'code_model_for_images'                      => 'Получать изображения из:',
         'section_management_additional_fields_offer' => 'Дополнительные поля',
         'section_yandex_market'                      => 'Яндекс.Маркет',
+        'field_price_type'                           => 'Тип цены',
     ],
     'button'     => [
         'export_catalog_to_xml' => 'Запуск экспорта',

@@ -211,12 +211,13 @@ class ExportCatalogHelper
      */
     protected function initOffer($obOffer, $obProduct)
     {
+        $iPriceTypeId = YandexMarketSettings::getValue('field_price_type', null);
         $arOfferData = [
             'name'           => $obOffer->name,
             'rate'           => YandexMarketSettings::getValue('offers_rate', ''),
             'url'            => $obProduct->getPageUrl(),
             'id'             => $obOffer->id,
-            'price'          => $obOffer->price_value,
+            'price'          => $obOffer->setActivePriceType($iPriceTypeId)->price_value,
             'currency_id'    => !empty($this->obDefaultCurrency) ? $this->obDefaultCurrency->code : '',
             'category_id'    => $obProduct->category_id,
             'images'         => $this->getOfferImages($obOffer, $obProduct),

@@ -6,6 +6,7 @@ use October\Rain\Database\Traits\Validation;
 
 use Lovata\Toolbox\Models\CommonSettings;
 use Lovata\Shopaholic\Models\Currency;
+use Lovata\Shopaholic\Models\PriceType;
 
 /**
  * Class YandexMarketSettings
@@ -63,9 +64,9 @@ class YandexMarketSettings extends CommonSettings
      */
     public function getCurrencyOptions()
     {
-        $arResult = (array) Currency::where('is_default', false)->lists('name', 'id');
-
-        return $arResult;
+        return Currency::where('is_default', false)
+            ->pluck('name', 'id')
+            ->all();
     }
 
     /**
@@ -108,8 +109,20 @@ class YandexMarketSettings extends CommonSettings
             return [];
         }
 
-        $arPropertyList = (array) \Lovata\PropertiesShopaholic\Models\Property::active()->lists('name', 'id');
+        return \Lovata\PropertiesShopaholic\Models\Property::active()
+            ->pluck('name', 'id')
+            ->all();
+    }
 
-        return $arPropertyList;
+    /**
+     * Get price type options
+     *
+     * @return array
+     */
+    public function getPriceTypeOptions() : array
+    {
+        return PriceType::where('active', true)
+            ->pluck('name', 'id')
+            ->all();
     }
 }
