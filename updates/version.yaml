@@ -6,3 +6,5 @@
     - 'Added require array to Plugin file'
 1.1.0:
     - 'Improved integration. Thanks for contribution Nick Khaetsky.'
+1.2.0:
+    - 'Added composer.json to plugin'

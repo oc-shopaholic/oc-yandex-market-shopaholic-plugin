@@ -1,0 +1,8 @@
+{
+    "name": "lovata/yandexmarketshopaholic-plugin",
+    "type": "october-plugin",
+    "description": "Generation XML file for integration with Yandex.Market",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
