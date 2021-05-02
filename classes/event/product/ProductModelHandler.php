@@ -1,5 +1,6 @@
 <?php namespace Lovata\YandexMarketShopaholic\Classes\Event\Product;
 
+use Lovata\Shopaholic\Classes\Item\ProductItem;
 use Lovata\Shopaholic\Models\Product;
 
 /**
@@ -25,5 +26,10 @@ class ProductModelHandler
 
             $obProduct->addCachedField(['preview_image_yandex', 'images_yandex']);
         });
+
+        ProductItem::$arQueryWith[] = 'preview_image_yandex';
+        ProductItem::$arQueryWith[] = 'images_yandex';
+        ProductItem::$arQueryWith[] = 'offer.preview_image_yandex';
+        ProductItem::$arQueryWith[] = 'offer.images_yandex';
     }
 }

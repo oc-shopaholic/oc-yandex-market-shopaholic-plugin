@@ -1,5 +1,6 @@
 <?php namespace Lovata\YandexMarketShopaholic\Classes\Event\Offer;
 
+use Lovata\Shopaholic\Classes\Item\OfferItem;
 use Lovata\Shopaholic\Models\Offer;
 
 /**
@@ -25,5 +26,8 @@ class OfferModelHandler
 
             $obOffer->addCachedField(['preview_image_yandex', 'images_yandex']);
         });
+
+        OfferItem::$arQueryWith[] = 'preview_image_yandex';
+        OfferItem::$arQueryWith[] = 'images_yandex';
     }
 }
