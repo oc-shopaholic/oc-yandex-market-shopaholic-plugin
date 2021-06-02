@@ -13,7 +13,8 @@ use October\Rain\Argon\Argon;
 class GenerateXML
 {
     const FILE_NAME = 'yandex_market.yml';
-    const DEFAULT_DIRECTORY = 'app/media/';
+    const DEFAULT_DIRECTORY_PATH = 'app/media/';
+    const DIRECTORY_NAME = 'media';
 
     /**
      * @var array
@@ -41,7 +42,7 @@ class GenerateXML
      */
     public static function getFilePath()
     {
-        $sResult = self::DEFAULT_DIRECTORY.self::FILE_NAME;
+        $sResult = self::DEFAULT_DIRECTORY_PATH.self::FILE_NAME;
 
         return $sResult;
     }
