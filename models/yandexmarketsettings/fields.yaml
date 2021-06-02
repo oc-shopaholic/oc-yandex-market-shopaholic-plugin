@@ -102,6 +102,13 @@ tabs:
             required: 0
             tab: 'lovata.shopaholic::lang.tab.offer'
             default: false
+        field_price_type:
+            label: 'lovata.yandexmarketshopaholic::lang.field.field_price_type'
+            type: dropdown
+            emptyOption: 'lovata.toolbox::lang.field.empty'
+            span: left
+            options: getPriceTypeOptions
+            tab: 'lovata.shopaholic::lang.tab.offer'
         field_old_price:
             label: 'lovata.shopaholic::lang.field.old_price'
             type: checkbox
