@@ -63,7 +63,7 @@ class YandexMarketSettings extends CommonSettings
      */
     public function getCurrencyOptions()
     {
-        $arResult = (array) Currency::where('is_default', false)->lists('name', 'id');
+        $arResult = (array) Currency::where('is_default', false)->pluck('name', 'id')->all();
 
         return $arResult;
     }
@@ -108,7 +108,7 @@ class YandexMarketSettings extends CommonSettings
             return [];
         }
 
-        $arPropertyList = (array) \Lovata\PropertiesShopaholic\Models\Property::active()->lists('name', 'id');
+        $arPropertyList = (array) \Lovata\PropertiesShopaholic\Models\Property::active()->pluck('name', 'id')->all();
 
         return $arPropertyList;
     }
